@@ -1,6 +1,12 @@
 const fs = require('fs/promises');
 
 (async () => {
+  // Commands
+  const CREATE_FILE = 'create a file';
+  const DELETE_FILE = 'delete the file';
+  const RENAME_FILE = 'rename the file';
+  const ADD_TO_FILE = 'add to the file';
+
   const createFile = async (path) => {
     try {
       // check if file exist
@@ -15,8 +21,27 @@ const fs = require('fs/promises');
     }
   };
 
-  // Commands
-  const CREATE_FILE = 'create a file';
+  const deleteFile = async (path) => {
+    try {
+      await fs.unlink(path);
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        console.log('No file at this path to remove');
+      } else {
+        console.log('An error occurred while removing the file');
+        console.log(error);
+      }
+    }
+  };
+
+  const renameFile = async (oldPath, newPath) => {
+    console.log(`Renaming ${oldPath} to ${newPath}`);
+  };
+
+  const addToFile = async (path, content) => {
+    console.log(`Adding to ${path}`);
+    console.log(`Content: ${content}`);
+  };
 
   const commandFileHandler = await fs.open('./command.txt', 'r');
 
@@ -40,6 +65,33 @@ const fs = require('fs/promises');
     if (command.includes(CREATE_FILE)) {
       const filePath = command.substring(CREATE_FILE.length + 1);
       createFile(filePath);
+    }
+
+    // Delete a file
+    // delete the file <path>
+    if (command.includes(DELETE_FILE)) {
+      const filePath = command.substring(DELETE_FILE.length + 1);
+      deleteFile(filePath);
+    }
+
+    // Rename file:
+    // rename the file <path> to <new-path>
+    if (command.includes(RENAME_FILE)) {
+      const _idx = command.indexOf(' to ');
+      const oldFilePath = command.substring(RENAME_FILE.length + 1, _idx);
+      const newFilePath = command.substring(_idx + 4);
+
+      renameFile(oldFilePath, newFilePath);
+    }
+
+    //  Add to file:
+    // add to the file <path> with content: <content>
+    if (command.includes(ADD_TO_FILE)) {
+      const _idx = command.indexOf(' this content: ');
+      const filePath = command.substring(ADD_TO_FILE.length + 1, _idx);
+      const content = command.substring(_idx + 15);
+
+      addToFile(filePath, content);
     }
   });
 

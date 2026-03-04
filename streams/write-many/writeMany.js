@@ -84,7 +84,7 @@ const fs = require('node:fs/promises');
 
   const writeMany = () => {
     while (i < 1000000) {
-      const buff = Buffer.from(`${i}`, 'utf-8');
+      const buff = Buffer.from(`${i} `, 'utf-8');
 
       // this is our last write
       if (i === 999999) {
@@ -104,7 +104,7 @@ const fs = require('node:fs/promises');
 
   // resume our loop once our stream's internal buffer is empty
   stream.on('drain', () => {
-    console.log("Drained!!!")
+    console.log('Drained!!!');
     writeMany();
   });
 

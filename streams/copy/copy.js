@@ -1,11 +1,14 @@
+const { pipeline } = require('node:stream');
 const fs = require('node:fs/promises');
 
-// Execution Time: 11.549ms
+// File Size Copied: 889MB
+// Memory Usage: 862.4MB
+// Execution Time: 411.335ms
 // (async () => {
 //   console.time('copy');
 
 //   const destFile = await fs.open('text-copy.txt', 'w');
-//   const result = await fs.readFile('text.txt');
+//   const result = await fs.readFile('text-big.txt');
 
 //   await destFile.write(result);
 //   console.log(result);
@@ -13,11 +16,13 @@ const fs = require('node:fs/promises');
 //   console.timeEnd('copy');
 // })();
 
-// Execution Time: 13.235ms
+// File Size Copied: 889MB
+// Memory Usage: 23.4MB
+// Execution Time: 1.213s
 // (async () => {
 //   console.time('copy');
 
-//   const srcFile = await fs.open('text.txt', 'r');
+//   const srcFile = await fs.open('text-big.txt', 'r');
 //   const destFile = await fs.open('text-copy.txt', 'w');
 
 //   let bytesRead = -1;
@@ -38,3 +43,27 @@ const fs = require('node:fs/promises');
 
 //   console.timeEnd('copy');
 // })();
+
+// File Size Copied: 889MB
+// Memory Usage: 24.9MB
+// Execution Time: 519.529ms
+(async () => {
+  console.time('copy');
+
+  const srcFile = await fs.open('text-big.txt', 'r');
+  const destFile = await fs.open('text-copy.txt', 'w');
+
+  const readStream = srcFile.createReadStream();
+  const writeStream = destFile.createWriteStream();
+
+  // readStream.pipe(writeStream);
+
+  // readStream.on('end', () => {
+  //   console.timeEnd('copy');
+  // });
+
+  pipeline(readStream, writeStream, (err) => {
+    console.log(err);
+    console.timeEnd('copy');
+  });
+})();

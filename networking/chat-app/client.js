@@ -22,6 +22,8 @@ const moveCursor = (dx, dy) => {
   });
 };
 
+let id;
+
 const socket = net.createConnection(
   { host: '127.0.0.1', port: 3008 },
   async () => {
@@ -35,22 +37,30 @@ const socket = net.createConnection(
 
       // clear the current line that the cursor is in
       await clearLine(0);
-      socket.write(message);
+      socket.write(`${id}-message-${message}`);
     };
 
     ask();
 
     socket.on('data', async (data) => {
+      const idPresent = data.toString('utf-8').substring(0, 2) === 'id';
+
       // log an empty line
       console.log();
-
       // move the cursor one line up
       await moveCursor(0, -1);
-
       // clear the line the cursor just moved into
       await clearLine(0);
 
-      console.log(data.toString('utf-8'));
+      if (idPresent) {
+        // When we are getting the id
+        id = data.toString('utf-8').substring(3);
+
+        console.log(`Your id is ${id}!\n`);
+      } else {
+        // When we are getting a message
+        console.log(data.toString('utf-8'));
+      }
 
       ask();
     });

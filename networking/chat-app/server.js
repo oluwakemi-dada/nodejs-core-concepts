@@ -9,6 +9,12 @@ server.on('connection', (socket) => {
   console.log('A new connection to the server!');
 
   const clientId = clients.length + 1;
+
+  // Broadcast a message to everyone when someone enters the chat room
+  clients.map((client) => {
+    client.socket.write(`User ${clientId} joined!`);
+  });
+
   socket.write(`id-${clientId}`);
 
   socket.on('data', (data) => {
@@ -17,6 +23,19 @@ server.on('connection', (socket) => {
     const message = dataString.substring(dataString.indexOf('-message-') + 9);
     clients.map((client) => {
       client.socket.write(`> User ${id}: ${message}`);
+    });
+  });
+
+  // Broadcast a message to everyone when someone leaves the chat room
+  socket.on('end', () => {
+    clients.map((client) => {
+      client.socket.write(`User ${clientId} left!`);
+    });
+  });
+
+  socket.on('error', () => {
+    clients.map((client) => {
+      client.socket.write(`User ${clientId} left!`);
     });
   });
 

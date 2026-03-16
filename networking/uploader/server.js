@@ -3,22 +3,38 @@ const fs = require('node:fs/promises');
 
 const server = net.createServer(() => {});
 
-let fileHandle, fileStream;
+let fileHandle, fileWriteStream;
 
 server.on('connection', (socket) => {
   console.log('New connection!');
 
   socket.on('data', async (data) => {
-    fileHandle = await fs.open(`storage/test.txt`, 'w');
-    fileStream = fileHandle.createWriteStream();
+    if (!fileHandle) {
+      socket.pause(); // pause receiving data from the client
+      fileHandle = await fs.open(`storage/test.txt`, 'w');
+      fileWriteStream = fileHandle.createWriteStream(); // the stream to write to
 
-    // Writing to our destination file
-    fileStream.write(data);
+      // Writing to our destination file
+      fileWriteStream.write(data);
+
+      socket.resume(); // resume receiving data from the the client
+
+      fileWriteStream.on('drain', () => {
+        socket.resume();
+      });
+    } else {
+      if (!fileWriteStream.write(data)) {
+        socket.pause();
+      }
+    }
   });
 
+  // This end event happens when the client.js file ends the socket
   socket.on('end', () => {
-    console.log('Connection ended!');
     fileHandle.close();
+    fileHandle = undefined;
+    fileWriteStream = undefined;
+    console.log('Connection ended!');
   });
 });
 

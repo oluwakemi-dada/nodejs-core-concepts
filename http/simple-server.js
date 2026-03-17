@@ -1,25 +1,24 @@
-const http = require('node:http');
-
-const PORT = 8050;
+const http = require("node:http");
 
 const server = http.createServer();
 
-server.on('request', (req, res) => {
-  console.log('------- METHOD: -------');
-  console.log(req.method);
+server.on("request", (request, response) => {
+  console.log("--------- METHOD: ---------");
+  console.log(request.method);
 
-  console.log('------- URL: -------');
-  console.log(req.url);
+  console.log("--------- URL: ---------");
+  console.log(request.url);
 
-  console.log('------- HEADERS: -------');
-  console.log(req.headers);
+  console.log("--------- HEADERS: ---------");
+  console.log(request.headers);
 
-  console.log('------- BODY: -------');
-  req.on('data', (chunk) => {
-    console.log(chunk.toString('utf-8'));
+  console.log("--------- BODY: ---------");
+
+  request.on("data", (chunk) => {
+    console.log(chunk.toString("utf-8"));
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`);
+server.listen(8050, () => {
+  console.log("Server listening on http://localhost:8050");
 });

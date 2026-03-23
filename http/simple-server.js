@@ -19,19 +19,19 @@ server.on('request', (request, response) => {
 
   request.on('data', (chunk) => {
     data += chunk.toString();
+    console.log(data)
   });
 
   request.on('end', () => {
     data = JSON.parse(data);
 
-    console.log(data);
-    console.log(name);
-
     response.writeHead(200, {
       'Content-Type': 'application/json',
     });
     response.end(
-      JSON.stringify({ message: `Post with title ${data.title} was created by ${name}` }),
+      JSON.stringify({
+        message: `Post with title ${data.title} was created by ${name}`,
+      }),
     );
   });
 });

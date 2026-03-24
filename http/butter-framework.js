@@ -48,6 +48,7 @@ class Butter {
     });
   }
 
+  // Object methods
   route(method, path, cb) {
     this.routes[method + path] = cb;
   }

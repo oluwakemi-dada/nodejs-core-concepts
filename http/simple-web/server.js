@@ -7,11 +7,29 @@ server.on('request', async (request, response) => {
   if (request.url === '/' && request.method === 'GET') {
     response.setHeader('Content-Type', 'text/html');
 
-    const fileHandle = await fs.open('./public/index.html');
+    const fileHandle = await fs.open('./public/index.html', 'r');
     const fileStream = fileHandle.createReadStream();
 
     fileStream.pipe(response);
   }
+
+  if (request.url === '/styles.css' && request.method === 'GET') {
+    response.setHeader('Content-Type', 'text/css');
+
+    const fileHandle = await fs.open('./public/styles.css', 'r');
+    const fileStream = fileHandle.createReadStream();
+
+    fileStream.pipe(response);
+  }
+
+    if (request.url === '/script.js' && request.method === 'GET') {
+      response.setHeader('Content-Type', 'text/javascript');
+
+      const fileHandle = await fs.open('./public/script.js', 'r');
+      const fileStream = fileHandle.createReadStream();
+
+      fileStream.pipe(response);
+    }
 });
 
 server.listen(9000, () => {

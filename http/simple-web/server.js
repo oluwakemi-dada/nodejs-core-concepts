@@ -1,4 +1,4 @@
-const Butter = require('./butter');
+const Butter = require('../butter-framework');
 
 const PORT = 4060;
 

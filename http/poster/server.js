@@ -38,8 +38,26 @@ const PORT = 8000;
 
 const server = new Butter();
 
+server.beforeEach((req, res, next) => {
+  console.log('This is the first middleware function');
+  next();
+});
+
+server.beforeEach((req, res, next) => {
+  setTimeout(() => {
+    console.log('This is the second middleware function');
+    next();
+  }, 2000);
+});
+
+server.beforeEach((req, res, next) => {
+  console.log('This is the third middleware function');
+  next();
+});
+
 // ----- Files Routes -----
 server.route('get', '/', (req, res) => {
+  console.log('This is the / route!');
   res.sendFile('./public/index.html', 'text/html');
 });
 

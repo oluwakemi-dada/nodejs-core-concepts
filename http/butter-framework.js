@@ -12,6 +12,7 @@ class Butter {
      * }
      */
     this.routes = {};
+    this.middleware = [];
 
     this.server.on('request', (req, res) => {
       // Send a file back to the client
@@ -36,21 +37,35 @@ class Butter {
         res.end(JSON.stringify(data));
       };
 
-      // if the routes object does not have the key of req.method + req.url
-      if (!this.routes[req.method.toLocaleLowerCase() + req.url]) {
-        return res
-          .status(404)
-          .json({ error: `Cannot ${req.method} ${req.url}` });
-      }
+      const runMiddleware = (req, res, middleware, index) => {
+        // Our exit point
+        if (index === middleware.length) {
+          // if the routes object does not have the key of req.method + req.url
+          if (!this.routes[req.method.toLocaleLowerCase() + req.url]) {
+            return res
+              .status(404)
+              .json({ error: `Cannot ${req.method} ${req.url}` });
+          }
 
-      // If route is available in routes object
-      this.routes[req.method.toLocaleLowerCase() + req.url](req, res);
+          this.routes[req.method.toLocaleLowerCase() + req.url](req, res);
+        } else {
+          middleware[index](req, res, () => {
+            runMiddleware(req, res, middleware, index + 1);
+          });
+        }
+      };
+
+      runMiddleware(req, res, this.middleware, 0);
     });
   }
 
   // Object methods
   route(method, path, cb) {
     this.routes[method + path] = cb;
+  }
+
+  beforeEach(cb) {
+    this.middleware.push(cb);
   }
 
   listen(port, cb) {

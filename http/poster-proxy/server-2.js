@@ -30,24 +30,28 @@ const POSTS = [
   },
 ];
 
-const PORT = 8000;
+const PORT = 9002;
 
 const server = new Butter();
 
 // ----- Files Routes -----
 server.route('get', '/', (req, res) => {
+  console.log('Server 2 is now handling this request!');
   res.sendFile('./public/index.html', 'text/html');
 });
 
 server.route('get', '/login', (req, res) => {
+  console.log('Server 2 is now handling this request!');
   res.sendFile('./public/index.html', 'text/html');
 });
 
 server.route('get', '/styles.css', (req, res) => {
+  console.log('Server 2 is now handling this request!');
   res.sendFile('./public/styles.css', 'text/css');
 });
 
 server.route('get', '/scripts.js', (req, res) => {
+  console.log('Server 2 is now handling this request!');
   res.sendFile('./public/scripts.js', 'text/javascript');
 });
 
@@ -80,9 +84,7 @@ server.route('post', '/api/login', (req, res) => {
   });
 });
 
-server.route('get', "/api/user", (req, res) => {
-
-})
+server.route('get', '/api/user', (req, res) => {});
 
 // Send the list of all the posts that we have
 server.route('get', '/api/posts', (req, res) => {

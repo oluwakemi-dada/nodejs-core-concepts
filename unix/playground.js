@@ -6,9 +6,9 @@ stdin.on('data', (data) => {
   stdout.write(`Got this data from standard in: ${data.toString('utf-8')}\n`);
 });
 
-stdout.write('This is some text that i want.');
+stdout.write('This is some text that i want.\n');
 
-stderr.write('This is some text that i may not want.');
+stderr.write('This is some text that i may not want.\n');
 
 // ---- Process variables
 // console.log(process.env.PATH);

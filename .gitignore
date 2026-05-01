@@ -2,3 +2,4 @@
 *.jpg
 .DS_Store
 node_modules
+storage/

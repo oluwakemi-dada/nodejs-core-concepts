@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
   int index = 0;
 
   // Read one character from stdin
-  int c = fgetc(stdin);
+  char c = fgetc(stdin);
 
   // Keep reading until we get the End of File sign
   while (c != EOF) {

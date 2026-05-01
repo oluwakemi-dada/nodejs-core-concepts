@@ -1,5 +1,11 @@
-# ls
+# ll
+
+alias runp="node playground.js"
+
+myvar=100
+
 myfunc() {
+  echo $myvar
   x=120
   y=500
   # sleep 4

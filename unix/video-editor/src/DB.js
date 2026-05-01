@@ -1,9 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
-// const videosPath = './data/videos';
-// const usersPath = './data/users';
-// const sessionsPath = './data/sessions';
 const videosPath = path.join(__dirname, '../data/videos.json');
 const usersPath = path.join(__dirname, '../data/users.json');
 const sessionsPath = path.join(__dirname, '../data/sessions.json');

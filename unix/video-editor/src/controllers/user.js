@@ -1,4 +1,4 @@
-const DB = require("../DB");
+const DB = require('../DB');
 
 const logUserIn = (req, res, handleErr) => {
   const username = req.body.username;
@@ -19,10 +19,10 @@ const logUserIn = (req, res, handleErr) => {
     DB.sessions.push({ userId: user.id, token: token });
     DB.save();
 
-    res.setHeader("Set-Cookie", `token=${token}; Path=/;`);
-    res.status(200).json({ message: "Logged in successfully!" });
+    res.setHeader('Set-Cookie', `token=${token}; Path=/;`);
+    res.status(200).json({ message: 'Logged in successfully!' });
   } else {
-    return handleErr({ status: 401, message: "Invalid username or password." });
+    return handleErr({ status: 401, message: 'Invalid username or password.' });
   }
 };
 
@@ -30,17 +30,17 @@ const logUserOut = (req, res) => {
   // Remove the session object form the DB SESSIONS array
   DB.update();
   const sessionIndex = DB.sessions.findIndex(
-    (session) => session.userId === req.userId
+    (session) => session.userId === req.userId,
   );
   if (sessionIndex > -1) {
     DB.sessions.splice(sessionIndex, 1);
     DB.save();
   }
   res.setHeader(
-    "Set-Cookie",
-    `token=deleted; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT`
+    'Set-Cookie',
+    `token=deleted; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT`,
   );
-  res.status(200).json({ message: "Logged out successfully!" });
+  res.status(200).json({ message: 'Logged out successfully!' });
 };
 
 const sendUserInfo = (req, res) => {
@@ -71,7 +71,7 @@ const updateUser = (req, res) => {
   res.status(200).json({
     username: user.username,
     name: user.name,
-    password_status: password ? "updated" : "not updated",
+    password_status: password ? 'updated' : 'not updated',
   });
 };
 

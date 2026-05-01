@@ -1,1 +1,32 @@
-[{"id":1,"videoId":"925d6896","name":"River","extension":"mp4","userId":3,"extractedAudio":false,"resizes":{}},{"id":0,"videoId":"3cb3b318","name":"Lake+Ontario","extension":"mov","userId":3,"extractedAudio":false,"resizes":{}}]
+[
+  {
+    "id": 2,
+    "videoId": "1433b996",
+    "name": "video",
+    "extension": "mp4",
+    "dimensions": { "width": 1920, "height": 1080 },
+    "userId": 3,
+    "extractedAudio": false,
+    "resizes": {}
+  },
+  {
+    "id": 1,
+    "videoId": "f4739726",
+    "name": "River",
+    "extension": "mp4",
+    "dimensions": { "width": 3840, "height": 2160 },
+    "userId": 3,
+    "extractedAudio": false,
+    "resizes": {}
+  },
+  {
+    "id": 0,
+    "videoId": "d8da5f2f",
+    "name": "Lake+Ontario",
+    "extension": "mov",
+    "dimensions": { "width": 1920, "height": 1080 },
+    "userId": 3,
+    "extractedAudio": false,
+    "resizes": {}
+  }
+]

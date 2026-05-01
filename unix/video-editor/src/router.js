@@ -1,6 +1,6 @@
 // Controllers
-const User = require("./controllers/user");
-const Video = require("./controllers/video");
+const User = require('./controllers/user');
+const Video = require('./controllers/video');
 
 module.exports = (server) => {
   // ------------------------------------------------ //
@@ -8,22 +8,27 @@ module.exports = (server) => {
   // ------------------------------------------------ //
 
   // Log a user in and give them a token
-  server.route("post", "/api/login", User.logUserIn);
+  server.route('post', '/api/login', User.logUserIn);
 
   // Log a user out
-  server.route("delete", "/api/logout", User.logUserOut);
+  server.route('delete', '/api/logout', User.logUserOut);
 
   // Send user info
-  server.route("get", "/api/user", User.sendUserInfo);
+  server.route('get', '/api/user', User.sendUserInfo);
 
   // Update a user info
-  server.route("put", "/api/user", User.updateUser);
+  server.route('put', '/api/user', User.updateUser);
 
   // ------------------------------------------------ //
   // ************ VIDEO ROUTES ************* //
   // ------------------------------------------------ //
-  server.route("get", "/api/videos", Video.getVideos);
+
+  // Return the list of all the videos that a logged in user has uploaded
+  server.route('get', '/api/videos', Video.getVideos);
 
   // Upload a video file
-  server.route("post", "/api/upload-video", Video.uploadVideo);
+  server.route('post', '/api/upload-video', Video.uploadVideo);
+
+  // Return a video asset to the client
+  server.route('get', '/get-video-asset', Video.getVideoAsset);
 };

@@ -1,10 +1,17 @@
 const path = require('node:path');
+const cluster = require('node:cluster');
 const crypto = require('node:crypto');
 const fs = require('node:fs/promises');
 const { pipeline } = require('node:stream/promises');
 const util = require('../../lib/util');
 const DB = require('../DB');
 const FF = require('../../lib/FF');
+
+let jobs;
+if (cluster.isPrimary) {
+  const JobQueue = require('../../lib/JobQueue');
+  jobs = new JobQueue();
+}
 
 // Return the list of all the videos that a logged in user has uploaded
 const getVideos = (req, res, handleErr) => {
@@ -69,6 +76,70 @@ const uploadVideo = async (req, res, handleErr) => {
     util.deleteFolder(`./storage/${videoId}`);
     if (e.code !== 'ECONNRESET') return handleErr(e);
   }
+};
+
+// Extract the audio for a video file (can only be done once per video)
+const extractAudio = async (req, res, handleErr) => {
+  const videoId = req.params.get('videoId');
+
+  DB.update();
+  const video = DB.videos.find((video) => video.videoId === videoId);
+
+  if (video.extractedAudio) {
+    return handleErr({
+      status: 400,
+      message: 'The audio has already been extracted for this video.',
+    });
+  }
+
+  try {
+    const originalVideoPath = `./storage/${videoId}/original.${video.extension}`;
+    const targetAudioPath = `./storage/${videoId}/audio.aac`;
+
+    await FF.extractAudio(originalVideoPath, targetAudioPath);
+
+    video.extractedAudio = true;
+    DB.save();
+
+    res.status(200).json({
+      status: 'success',
+      message: 'The audio was extracted successfully!',
+    });
+  } catch (e) {
+    util.deleteFile(targetAudioPath);
+    return handleErr(e);
+  }
+};
+
+// Resize a video file (creates a new video file)
+const resizeVideo = async (req, res, handleErr) => {
+  const videoId = req.body.videoId;
+  const width = Number(req.body.width);
+  const height = Number(req.body.height);
+
+  DB.update();
+  const video = DB.videos.find((video) => video.videoId === videoId);
+  video.resizes[`${width}x${height}`] = { processing: true };
+  DB.save();
+
+  if (cluster.isPrimary) {
+    jobs.enqueue({
+      type: 'resize',
+      videoId,
+      width,
+      height,
+    });
+  } else {
+    process.send({
+      messageType: 'new-resize',
+      data: { videoId, width, height },
+    });
+  }
+
+  res.status(200).json({
+    status: 'success',
+    message: 'The video is now being processed!',
+  });
 };
 
 // Return a video asset to the client
@@ -147,6 +218,8 @@ const getVideoAsset = async (req, res, handleErr) => {
 const controller = {
   getVideos,
   uploadVideo,
+  extractAudio,
+  resizeVideo,
   getVideoAsset,
 };
 
